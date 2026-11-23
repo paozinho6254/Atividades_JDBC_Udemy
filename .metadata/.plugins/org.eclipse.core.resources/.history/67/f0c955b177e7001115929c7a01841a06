@@ -1,0 +1,76 @@
+package application;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import db.DB;
+
+public class Program {
+
+	public static void main(String[] args) {
+			
+		// Formatação de data
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Connection conn = null;
+		
+		// Statement para enviar comandos de inserção/mudança do banco
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DB.getConnection();
+			/*
+			// ps diretamente executa o comando
+			ps = conn.prepareStatement(
+					"insert into seller "
+					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId)"
+					+ "values "
+					// ? significa que tal atributo será preenchido, 
+					// mas deve seguir a ordem
+					+ "(?, ?, ?, ?, ?)",
+					// Retorna o id gerado na inserção dos dados
+					Statement.RETURN_GENERATED_KEYS);
+			
+			// Set é responsável por definir que valor vai para o atributo
+			// Indice deve indicar a posição do valor, Ex.: (Name, Email, BirthDate, BaseSalary, DepartmentId)
+			// para inserir ou mudar atributo Name, deve-se colocar 1, pois é o primeiro na ordem...
+			/// Após, coloque o valor do atributo
+			ps.setString(1, "Carl Jhonson");
+			ps.setString(2, "cjgroove@lsmail.com");
+			ps.setDate(3, new java.sql.Date(sdf.parse("10/03/1971").getTime()));
+			ps.setDouble(4, 3000);
+			ps.setInt(5, 3);
+			*/
+			
+			// Nesse caso é simplificado a inserção de 2 departamentos
+			ps = conn.prepareStatement("Insert into department(Name) values ('D1'),('D2')",
+					Statement.RETURN_GENERATED_KEYS);
+			
+			// Diz bem o que faz, rowsAffected indica a linhas afetadas na tabela
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs = ps.getGeneratedKeys();
+				while(rs.next()) {
+					int id = rs.getInt(1);
+					System.out.println("Done! id = "+id);
+				}
+			} else {
+				System.out.println("No Rows affected!");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DB.closeStatement(ps);
+			DB.closeConnection();
+		}
+		
+	}
+
+}

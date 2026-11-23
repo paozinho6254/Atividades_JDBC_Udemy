@@ -1,0 +1,4 @@
+INDEX VERSION 1.134+/home/paozinho_roru/eclipse-workspace/.metadata/.plugins/org.eclipse.jdt.core
+1865797976.index
+2018372985.index
+1942944497.index

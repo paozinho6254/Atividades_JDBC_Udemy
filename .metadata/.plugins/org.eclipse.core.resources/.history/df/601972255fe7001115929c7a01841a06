@@ -1,0 +1,50 @@
+package application;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import db.DB;
+
+public class Program {
+
+	public static void main(String[] args) {
+			
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Connection conn = null;
+		
+		PreparedStatement ps = null;
+		
+		try {
+			conn = DB.getConnection();
+			ps = conn.prepareStatement("UPDATE "
+					+ "SET email = 'novo.email@exemplo.com'"
+					+ "WHERE id = ;");
+			
+			int rowsAffected = ps.executeUpdate();
+			
+			if(rowsAffected > 0) {
+				ResultSet rs = ps.getGeneratedKeys();
+				while(rs.next()) {
+					int id = rs.getInt(1);
+					System.out.println("Done! id = "+id);
+				}
+			} else {
+				System.out.println("No Rows affected!");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DB.closeStatement(ps);
+			DB.closeConnection();
+		}
+		
+	}
+
+}
